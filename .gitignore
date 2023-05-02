@@ -1,0 +1,5 @@
+.envrc
+
+# Python ignores
+*.pyc
+*.pyo
