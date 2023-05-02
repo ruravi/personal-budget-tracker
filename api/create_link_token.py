@@ -9,6 +9,7 @@ from plaid.model.account_subtype import AccountSubtype
 from plaid.model.link_token_create_request_user import LinkTokenCreateRequestUser
 from plaid.model.country_code import CountryCode
 from plaid.model.products import Products
+import json
 
 
 class handler(BaseHTTPRequestHandler):
@@ -21,6 +22,7 @@ class handler(BaseHTTPRequestHandler):
         # 'Development'
         # 'Sandbox'
         configuration = plaid.Configuration(
+            # TODO: Figure out a way to inject a value based on the environment.
             host=plaid.Environment.Sandbox,
             api_key={
                 'clientId': os.environ['PLAID_CLIENT_ID'],
@@ -56,5 +58,16 @@ class handler(BaseHTTPRequestHandler):
             )
         )
 
-        self.wfile.write(plaid_response.link_token.encode('utf-8'))
+        self.wfile.write(json.dumps({
+            "link_token": plaid_response.link_token,
+        }).encode())
         return
+
+
+# Use this for local testing
+# if __name__ == "__main__":
+#     httpd = HTTPServer(('localhost', 8080), handler)
+#     try:
+#         httpd.serve_forever()
+#     except KeyboardInterrupt:
+#         print('Shutting down server')
