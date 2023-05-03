@@ -57,7 +57,7 @@ def retrieve_transactions(
         end_date=datetime.date(2023, 5, 1)
     )
     response = plaid_client.transactions_get(request)
-    transactions = [each['amount'] for each in response['transactions']]
+    transactions = response['transactions']
     so_far = len(transactions)
     total = response['total_transactions']
     print(f'{so_far} of {total} transactions retrieved')
@@ -72,8 +72,8 @@ def retrieve_transactions(
             offset=so_far
         )
         response = plaid_client.transactions_get(request)
-        transactions += [each['amount']
-                         for each in response['transactions']]
+        transactions += response['transactions']
+        print(f'{so_far} of {total} transactions retrieved')
         so_far += len(transactions)
 
     return transactions

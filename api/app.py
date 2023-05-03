@@ -21,6 +21,16 @@ class UserToken(db.Model):
     def __repr__(self):
         return f'<User {self.user_id}, Token: {self.access_token}>'
 
+
+class Transactions(db.Model):
+    transaction_id = db.Column(db.String(100), primary_key=True)
+    user_id = db.Column(db.String(100))
+    account_id = db.Column(db.String(100))
+    amount = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String(100))
+    date = db.Column(db.String(100))
+    description = db.Column(db.String(100))
+
 # Set up an init function to run before the app starts
 # This is where we'll initialize the Plaid client
 
