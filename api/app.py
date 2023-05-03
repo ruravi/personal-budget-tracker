@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Set up CORS for the entire app
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
 
@@ -19,7 +19,7 @@ class UserToken(db.Model):
     access_token = db.Column(db.String(120), nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.user_id
+        return f'<User {self.user_id}, Token: {self.access_token}>'
 
 # Set up an init function to run before the app starts
 # This is where we'll initialize the Plaid client

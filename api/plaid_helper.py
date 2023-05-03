@@ -1,4 +1,5 @@
 import plaid
+import datetime
 from plaid.model.link_token_create_request import LinkTokenCreateRequest
 from plaid.model.account_filter import AccountFilter
 from plaid.model.account_subtype import AccountSubtype
@@ -7,7 +8,7 @@ from plaid.model.country_code import CountryCode
 from plaid.model.products import Products
 from plaid.api import plaid_api
 from plaid.model.item_public_token_exchange_request import ItemPublicTokenExchangeRequest
-from plaid.model.transactions_sync_request import TransactionsSyncRequest
+from plaid.model.transactions_get_request import TransactionsGetRequest
 
 
 def create_link_token(
@@ -50,20 +51,29 @@ def exchange_public_token(
 def retrieve_transactions(
         plaid_client: plaid_api.PlaidApi,
         access_token: str) -> list:
-    request = TransactionsSyncRequest(
+    request = TransactionsGetRequest(
         access_token=access_token,
+        start_date=datetime.date(2023, 1, 1),
+        end_date=datetime.date(2023, 5, 1)
     )
-    response = plaid_client.transactions_sync(request)
-    transactions = response['added']
+    response = plaid_client.transactions_get(request)
+    transactions = [each['amount'] for each in response['transactions']]
+    so_far = len(transactions)
+    total = response['total_transactions']
+    print(f'{so_far} of {total} transactions retrieved')
 
     # the transactions in the response are paginated, so make multiple calls while incrementing the cursor to
     # retrieve all transactions
-    while (response['has_more']):
-        request = TransactionsSyncRequest(
+    while so_far < total:
+        request = TransactionsGetRequest(
             access_token=access_token,
-            cursor=response['next_cursor']
+            start_date='2023-01-01',
+            end_date='2023-05-01',
+            offset=so_far
         )
-        response = plaid_client.transactions_sync(request)
-        transactions += response['added']
+        response = plaid_client.transactions_get(request)
+        transactions += [each['amount']
+                         for each in response['transactions']]
+        so_far += len(transactions)
 
     return transactions
