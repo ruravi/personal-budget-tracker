@@ -10,7 +10,7 @@ This function returns a Plaid API client.
 def get_plaid_client():
     configuration = plaid.Configuration(
         # TODO: Figure out a way to inject a value based on the environment.
-        host=plaid.Environment.Sandbox,
+        host=plaid.Environment.Development,
         api_key={
             'clientId': os.environ['PLAID_CLIENT_ID'],
             'secret': os.environ['PLAID_SECRET'],
