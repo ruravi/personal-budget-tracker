@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 from api.get_plaid_client import get_plaid_client
 import api.plaid_helper
 import json
@@ -9,6 +10,17 @@ app = Flask(__name__)
 # Set up CORS for the entire app
 CORS(app)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+db = SQLAlchemy(app)
+
+
+class UserToken(db.Model):
+    user_id = db.Column(db.String(100), primary_key=True)
+    access_token = db.Column(db.String(120), nullable=False)
+
+    def __repr__(self):
+        return '<User %r>' % self.user_id
+
 # Set up an init function to run before the app starts
 # This is where we'll initialize the Plaid client
 
@@ -16,6 +28,8 @@ CORS(app)
 @app.before_first_request
 def init_app():
     app.plaid_client = get_plaid_client()
+    # Create the database tables
+    db.create_all()
 
 
 @app.route('/')
@@ -52,10 +66,14 @@ def get_access_token():
         access_token = api.plaid_helper.exchange_public_token(
             app.plaid_client,
             public_token)
-        # Return a json response with the access token
-        return {
-            'access_token': access_token,
-        }, 200
+
+        # Save this to local storage.
+        # TODO: Use actual user_id.
+        row = UserToken(user_id='user_good', access_token=access_token)
+        db.session.merge(row)
+        db.session.commit()
+
+        return {}, 200
     except Exception as e:
         error_response = json.loads(e.body)
         return {
