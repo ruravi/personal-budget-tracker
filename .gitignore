@@ -1,5 +1,6 @@
 .envrc
 instance/**/*
+.vscode/**
 
 # Python ignores
 *.pyc
