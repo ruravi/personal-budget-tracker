@@ -20,9 +20,25 @@ You will connect your financial accounts only once. This will download all your 
 
 1. Start the backend server using this command `flask run` from the `api` directory
 2. Start the frontend web app using this command `npm start` from the `connect-plaid-once` directory
+
+<img src=connect_view.png height=200 width=300>
+
 3. Click the 'Connect with Plaid' button and follow the instructions to connect your accounts.
-4. Once you have connected your accounts, you can stop the backend server and the frontend web app. You will not need them again. You can now use the data visualization app to view your spending. Check the instance folder for the database file.
-5. Start the data visualization app using this command `streamlit run scripts/app.py` from the top-level directory.
+4. Once you have connected your accounts, you can stop the backend server and the frontend web app. You will not need them again.
+
+<img src=done_view.png height=200 width=300>
+
+5. Now that we have an access token, we can download all transactions from the connected accounts. Run the `scripts/fetch_transactions.py --start_date=YYYY-MM-DD` script to download all transactions from the given date. Check the instance folder for the database file called `prod.db`. This is where the transactions are stored.
+5. You can now use the data visualization app to view your spending. Start the data visualization app using this command `streamlit run scripts/streamlit_app.py` from the top-level directory.
+
+<img src=streamlit_app.png height=500 width=500>
+
+## Keeping the database up-to-date
+
+To keep the transactions table up to date, run the `scripts/fetch_transactions.py` periodically. You can run this script from a cron job or a scheduled task. For eg. you may want to run the script every day at 2am.
+```
+python scripts/fetch_transactions.py --start_date=<yesterday>
+```
 
 ## Running the backend server in development/sandbox mode
 ### Prerequisites
