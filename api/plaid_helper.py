@@ -50,10 +50,12 @@ def exchange_public_token(
 
 def retrieve_transactions(
         plaid_client: plaid_api.PlaidApi,
-        access_token: str) -> list:
+        access_token: str,
+        start_date=datetime.date(2023, 1, 1)) -> list:
+
     request = TransactionsGetRequest(
         access_token=access_token,
-        start_date=datetime.date(2023, 1, 1),
+        start_date=start_date,
         end_date=datetime.date.today()
     )
     response = plaid_client.transactions_get(request)
