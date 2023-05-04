@@ -13,7 +13,7 @@ from plaid.model.transactions_get_request import TransactionsGetRequest
 
 def create_link_token(
         plaid_client: plaid_api.PlaidApi,
-        user_id: str = 'user_good') -> str:
+        user_id: str = 'ruravi') -> str:
     try:
         plaid_response = plaid_client.link_token_create(
             LinkTokenCreateRequest(
@@ -54,7 +54,7 @@ def retrieve_transactions(
     request = TransactionsGetRequest(
         access_token=access_token,
         start_date=datetime.date(2023, 1, 1),
-        end_date=datetime.date(2023, 5, 1)
+        end_date=datetime.date.today()
     )
     response = plaid_client.transactions_get(request)
     transactions = response['transactions']

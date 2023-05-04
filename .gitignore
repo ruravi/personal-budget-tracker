@@ -1,6 +1,7 @@
 .envrc
 instance/**/*
 .vscode/**
+.DS_Store
 
 # Python ignores
 *.pyc

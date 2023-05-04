@@ -56,13 +56,8 @@ def create_link_token():
             'link_token': link_token,
         }, 200
     except Exception as e:
-        error_response = json.loads(e.body)
         return {
-            'error': {
-                'display_message': error_response.get('display_message'),
-                'error_code': error_response.get('error_code'),
-                'error_type': error_response.get('error_type'),
-            }
+            'error': str(e)
         }, 500
 
 
